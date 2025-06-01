@@ -1,0 +1,44 @@
+[
+    {
+        "src" : "imgs/lib/book-site.jpeg",
+        "alt" : "Book Site Page" ,
+        "link" : "https://www.ostermalmtandvard.com/",
+        "category" : "أنظمة حجوزات",
+        "text" : "موقع لعيادة أسنان به نظام حجز"
+    },
+    {
+        "src" : "imgs/lib/crm.png",
+        "alt" : "CRM AI System" ,
+        "link" : "https://www.ostermalmtandvard.com/",
+        "category" : "أنظمة CRM و ERP ",
+        "text" : "صفحة هبوط لنظام CRM به أتمتة بالذكاء الإصطناعي"
+    },
+    {
+        "src" : "imgs/lib/sec.jpeg",
+        "alt" : "Portfolio Site For Security" ,
+        "link" : "https://www.cts-sa.com/",
+        "category" : "مواقع تعريفية",
+        "text" : "موقع تعريفي لشركة تقدم حلول أمنية"
+    },
+    {
+        "src" : "imgs/lib/courses.jpeg",
+        "alt" : "Courses Site Page" ,
+        "link" : "https://qica-academey.com/",
+        "category" : "متاجر إلكترونية",
+        "text" : "متجر كامل لبيع الكورسات و به أنظمة دفع و تسجيل"
+    },
+    {
+        "src" : "imgs/lib/africacards.png",
+        "alt" : "Online Digital Store" ,
+        "link" : "https://www.africacards.com/",
+        "category" : "متاجر إلكترونية",
+        "text" : "متجر إلكتروني لبيع المنتجات الرقمية"
+    },
+    {
+        "src" : "imgs/lib/archers.png",
+        "alt" : "Portfolio Page" ,
+        "link" : "https://www.archeersbd.com/",
+        "category" : "مواقع تعريفية",
+        "text" : "موقع تعريفي لشركة تطوير أعمال"
+    }
+]

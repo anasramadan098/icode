@@ -1,0 +1,136 @@
+/* responsive.css - جميع الأكواد الخاصة بتوافق الموقع مع جميع الأجهزة */
+
+/* الهواتف الصغيرة (أقل من 600px) */
+@media (max-width: 600px) {
+  body {
+    font-size: 15px;
+  }
+  header, nav, .side-nav, .cards, .card, section, .container, .list, .benifits, .faq, .accordion-item {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  .cards {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  .card {
+    flex-basis: 100% !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+  }
+  .text-slider .list {
+    font-size: 1.1em !important;
+  }
+  .benifits {
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  .faq .accordion-item .accordion-header {
+    font-size: 1em !important;
+  }
+  .faq .accordion-body p {
+    font-size: 0.95em !important;
+  }
+  footer {
+    font-size: 0.9em !important;
+    padding: 10px 0 !important;
+  }
+}
+
+/* التابلت (600px إلى 900px) */
+@media (min-width: 601px) and (max-width: 900px) {
+  .cards {
+    flex-wrap: wrap !important;
+    gap: 25px !important;
+  }
+  .card {
+    flex-basis: 48% !important;
+    min-width: 0 !important;
+    margin: 0 auto !important;
+  }
+  .benifits {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    gap: 20px !important;
+  }
+}
+
+/* الشاشات المتوسطة (900px إلى 1200px) */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .cards {
+    gap: 30px !important;
+  }
+  .card {
+    flex-basis: 31% !important;
+    min-width: 0 !important;
+  }
+}
+
+/* الشاشات الكبيرة (أكبر من 1200px) */
+@media (min-width: 1201px) {
+  .cards {
+    gap: 40px !important;
+  }
+  .card {
+    flex-basis: 23% !important;
+    min-width: 0 !important;
+  }
+}
+
+/* عناصر إضافية */
+@media (max-width: 900px) {
+  nav ul {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+  .side-nav {
+    width: 100vw !important;
+    padding: 60px 10px !important;
+  }
+  .text-slider .list {
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  h1, h2, h3, h4 {
+    font-size: 1.1em !important;
+  }
+  .logo img {
+    max-width: 120px !important;
+  }
+}
+
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 2002;
+  position: absolute;
+  top: 25px;
+  right: 25px;
+}
+.hamburger span {
+  display: block;
+  width: 30px;
+  height: 4px;
+  margin: 4px 0;
+  background: var(--main-color, #222);
+  border-radius: 2px;
+  transition: 0.4s;
+}
+@media (max-width: 900px) {
+  .hamburger { display: flex; }
+  nav ul, .quick-links { display: none !important; }
+  .side-nav { width: 80vw !important; right: 0; left: unset; }
+  .side-nav.active { transform: translateX(0); }
+}
+.hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px, 6px); }
+.hamburger.active span:nth-child(2) { opacity: 0; }
+.hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(7px, -7px); }
