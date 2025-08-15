@@ -40,5 +40,13 @@
         "link" : "https://www.archeersbd.com/",
         "category" : "مواقع تعريفية",
         "text" : "موقع تعريفي لشركة تطوير أعمال"
+    },
+    {
+        "src" : "imgs/lib/s-phar.png",
+        "alt" : " Scientific Pharmacy" ,
+        "link" : "http://scientific-pharmacy.com/",
+        "category" : "مواقع تعريفية",
+        "text" : "موقع كامل لصيدلية علمية"
     }
+
 ]
