@@ -1,6 +1,8 @@
 
 
 
+
+
 .side-nav {
     position: absolute;
     top: 0;
@@ -1262,6 +1264,9 @@ section.collaborate {
         }
     }
     section.how {
+        &::before {
+            left : 30px;
+        }
         .cards {
             .card {
                 flex-basis: 100%;
@@ -1276,6 +1281,9 @@ section.collaborate {
         }
     }
     section.testimonials {
+        &::after {
+            left : 30px;
+        }
         .rate-holder {
             flex-direction: column;
             justify-content: center;
@@ -1303,6 +1311,9 @@ section.collaborate {
         flex-basis: 100%;
     }
     section.collaborate {
+        &::after {
+            left : 30px;
+        }
         h2 {
             font-size: 3em;
         }
