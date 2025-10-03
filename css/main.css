@@ -13,6 +13,7 @@
     transform: translateX(-100%);
     padding: 100px 50px;
     transition: .3s;
+    display: none;
     .close {
         position: absolute;
         top: 30px;
