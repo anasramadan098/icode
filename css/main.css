@@ -468,6 +468,7 @@ section.expertise {
 }
 
 
+
 section.why {
     position: relative;
     overflow-x: hidden;
@@ -1156,7 +1157,13 @@ section.collaborate {
 
 
 @media (max-width : 786px) {
+    body {
+        background-size: cover;
+    }
     header {
+        display: none;
+    }
+    .side-nav {
         display: none;
     }
     .title {
@@ -1327,6 +1334,9 @@ section.collaborate {
         text-align: center;
         .social {
             justify-content: center !important;
+        }
+        .cols div {
+            max-width: 100% !important;
         }
     }
 }

@@ -15,13 +15,13 @@ const welcomeServices = [
 
 const serviceSpan = document.querySelector('section.welcome .serviceSpanAnimation');
 
-// Animate
-setInterval(() => {
-    const randomService = welcomeServices[Math.floor(Math.random() * welcomeServices.length)];
-    
-    serviceSpan.textContent = randomService;
-    
-}, 2600);
+// Animate (guard existence)
+if (serviceSpan) {
+    setInterval(() => {
+        const randomService = welcomeServices[Math.floor(Math.random() * welcomeServices.length)];
+        serviceSpan.textContent = randomService;
+    }, 2600);
+}
 
 // IMGs
 // document.querySelectorAll('img').forEach( img => {
@@ -67,115 +67,123 @@ document.querySelectorAll('.link-drop-menu').forEach(link => {
 })
 
 
-// Side Nav
+// Side Nav (guard existence)
 const sideNav = document.querySelector('.side-nav');
 const menuToogller = document.querySelector('.menuToogller');
-tl = gsap.timeline({paused: true});
+let tl = null;
+if (sideNav && menuToogller) {
+    tl = gsap.timeline({ paused: true });
 
-tl.to(sideNav, {
-    x : 0,
-    duration: .6,
-    ease: 'power.inOut'
-})
+    tl.to(sideNav, {
+        x: 0,
+        duration: 0.6,
+        ease: 'power.inOut'
+    });
 
-tl.from(sideNav.querySelector('.close') , {
-    y : 30,
-    opacity : 0,
-    duration: .3,
-    ease: 'power.Out',
-})
+    const closeBtn = sideNav.querySelector('.close');
+    if (closeBtn) {
+        tl.from(closeBtn, {
+            y: 30,
+            opacity: 0,
+            duration: 0.3,
+            ease: 'power.Out',
+        });
+        closeBtn.addEventListener('click', () => tl.reverse());
+    }
 
-tl.from(sideNav.querySelectorAll('.boxes .box') , {
-    y : 30,
-    opacity : 0,
-    duration: .3,
-    delay:.2,
-    ease: 'power.Out',
-    stagger: .3
-})
+    const boxes = sideNav.querySelectorAll('.boxes .box');
+    if (boxes.length) {
+        tl.from(boxes, {
+            y: 30,
+            opacity: 0,
+            duration: 0.3,
+            delay: 0.2,
+            ease: 'power.Out',
+            stagger: 0.3
+        });
+    }
 
-sideNav.querySelector('.close').addEventListener('click' , () => {
-    tl.reverse();
-
-})
-
-menuToogller.addEventListener('click' , () => {
-    tl.play();
-})
+    menuToogller.addEventListener('click', () => tl.play());
+}
 
 
-document.querySelectorAll('section:not(.welcome, .text-slider, .expertise, .benifits-parts , .collaborate)').forEach( section => { 
-
-    // Get The The Section Parent To The Title In Var
+document.querySelectorAll('section:not(.welcome, .text-slider, .expertise, .benifits-parts , .collaborate)').forEach(section => {
     const title = section.querySelector('.title');
-    
+    if (!title) return;
+
     gsap.from(title, {
         y: -100,
         opacity: 0,
         duration: 1,
         ease: 'easeOut',
-        // scrub : .1,
         scrollTrigger: {
             trigger: section,
-            start: "top 80%",
+            start: 'top 80%',
         }
-    })
+    });
 });
 
 
 
-const aboutTl = gsap.timeline({
-    scrollTrigger: {
-        trigger: "",
-        scroller: 'body',
-        start: "top -5%",
-        end: "bottom 0%",
-    },
-    
-});
 const aboutSection = document.querySelector('section.about');
+const aboutText = aboutSection?.querySelector('.text');
 
-animateTheMultipleElements('section.about .benifits .cards .card' , aboutSection , 'easeinear')
+if (aboutSection) {
+    animateTheMultipleElements('section.about .benifits .cards .card', aboutSection, 'easeinear');
 
+    const aboutHead = aboutSection.querySelector('.text .head');
+    if (aboutHead) {
+        gsap.from(aboutHead, {
+            y: -100,
+            opacity: 0,
+            duration: 0.7,
+            ease: 'easeinear',
+            scrollTrigger: {
+                trigger: aboutSection,
+                start: 'top 60%'
+            }
+        });
+    }
 
-gsap.from(aboutSection.querySelector('.text .head') , {
-    y : -100,
-    opacity: 0,
-    duration: .7,
-    ease: 'easeinear',
-    scrollTrigger: {
-        trigger: aboutSection,
-        start: "top 60%",
-    },
-})
-
-gsap.from(aboutSection.querySelector('.text a') , {
-    y : -100,
-    opacity: 0,
-    duration: .7,
-    ease: 'easeinear',
-    scrollTrigger: {
-        trigger: aboutSection,
-        start: "top 60%",
-    },
-})
+    const aboutLink = aboutSection.querySelector('.text a');
+    if (aboutLink) {
+        gsap.from(aboutLink, {
+            y: -100,
+            opacity: 0,
+            duration: 0.7,
+            ease: 'easeinear',
+            scrollTrigger: {
+                trigger: aboutSection,
+                start: 'top 60%'
+            }
+        });
+    }
+}
 
 
 const mm = gsap.matchMedia();
 
-// Computer Screen
-mm.add('(min-width: 974px) ' , () => {
-    aboutTl.to(aboutSection , {
+// Desktop only: pin the about text section (disable on small screens)
+mm.add('(min-width: 974px)', () => {
+    if (!aboutSection || !aboutText) return;
+
+    const desktopTl = gsap.timeline({
         scrollTrigger: {
-            trigger: "",
+            trigger: aboutSection,
             scroller: 'body',
-            pin: "section.about .text",
-            start: "top top",
-            end: "bottom -3%",
-          },
+            pin: aboutText,
+            start: 'top top',
+            end: 'bottom -3%',
+            pinSpacing: true,
+            invalidateOnRefresh: true
         }
-    )
-})
+    });
+
+    return () => {
+        desktopTl.scrollTrigger?.kill();
+        desktopTl.kill();
+    };
+});
 
 
 
@@ -315,27 +323,31 @@ gsap.from('section.collaborate h2' , {
         start: 'top 80%',
     },
 })
-function animateTheMultipleElements(elements , trigger , ease = 'back.in()') {
+function animateTheMultipleElements(elements, trigger, ease = 'back.in()') {
+    const targets = gsap.utils.toArray(elements);
+    const triggerElement = typeof trigger === 'string' ? document.querySelector(trigger) : trigger;
 
-    gsap.from(elements , {
-        y : 100,
-        opacity : 0,
-        delay : .2,
-        duration : .7,
+    if (!targets.length || !triggerElement) return;
+
+    gsap.from(targets, {
+        y: 100,
+        opacity: 0,
+        delay: 0.2,
+        duration: 0.7,
         stagger: {
-            amount : 1,
-            from : 'random',
+            amount: 1,
+            from: 'random'
         },
-        ease :ease,
+        ease
     });
 
-    gsap.to(elements , {
-        y : 0,
-        opacity : 1,
-        scrollTrigger : {
-            trigger: trigger,
+    gsap.to(targets, {
+        y: 0,
+        opacity: 1,
+        scrollTrigger: {
+            trigger: triggerElement,
             start: 'top 80%',
-        },
+            invalidateOnRefresh: true
+        }
     });
-
 }
