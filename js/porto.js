@@ -1,12 +1,12 @@
 const categoriesDivs = document.querySelector('#portfolio .categories')
 
 
-
 fetch('./js/port.json').then(data => data.json()).then(allData => {
     allData.forEach(data => {
         createCardImgFrom(data)
     })
     createCategoriesFrom(allData);
+    window.dispatchEvent(new Event('portfolio:ready'));
 }).catch((r) => console.log(r));
 
 
@@ -14,7 +14,6 @@ function createCategoriesFrom(data) {
     data.forEach(info => {
         const category = info.category;
         let itFound = false;
-        // Check If IT's Created Or Not
         categoriesDivs.querySelectorAll('span').forEach(span => {
             if (span.dataset.category.toLowerCase() == category.toLowerCase()) {
                 itFound = true;
@@ -22,17 +21,13 @@ function createCategoriesFrom(data) {
         })
 
         if (!itFound) {
-
-            // Create Span
             const span = document.createElement('span');
             span.className = 'category';
             span.dataset.category = category.toLowerCase();
             span.textContent = category.toUpperCase();
-        
-            // Event
-            span.addEventListener('click' , () => {     
-                const cards = document.querySelectorAll('section.portfolio .card') ;
-                console.log(span.dataset.category == 'all' , "ALL")
+
+            span.addEventListener('click' , () => {
+                const cards = document.querySelectorAll('section.portfolio .card');
                 if (span.dataset.category.toLowerCase() == 'all') {
                     cards.forEach(card => {
                         card.classList.remove('hide')
@@ -40,24 +35,20 @@ function createCategoriesFrom(data) {
                     });
                 } else {
                     cards.forEach(card => {
-                    console.log(card.dataset.category.toLowerCase() , span.dataset.category.toLowerCase() , "AS")
-                    if (card.dataset.category.toLowerCase() == span.dataset.category.toLowerCase()) {
-                        card.classList.remove('hide');
-                        card.classList.add('move-to-front');
-                    } else {
-                        card.classList.add('hide');
-                        card.classList.remove('move-to-front');
-                    }
-                });
-                }  
+                        if (card.dataset.category.toLowerCase() == span.dataset.category.toLowerCase()) {
+                            card.classList.remove('hide');
+                            card.classList.add('move-to-front');
+                        } else {
+                            card.classList.add('hide');
+                            card.classList.remove('move-to-front');
+                        }
+                    });
+                }
             })
-    
-            categoriesDivs.appendChild(span);
 
+            categoriesDivs.appendChild(span);
         }
     })
-
-
 }
 
 function createCardImgFrom(data) {

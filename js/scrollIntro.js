@@ -19,8 +19,10 @@
     let currentFrame = 0;
     let pixelRatio = 1;
     let lastSortedFrame = -1;
+    let lastDrawnFrame = -1;
+    let lastDrawnImage = null;
 
-    function drawFrame(index) {
+    function drawFrame(index, force = false) {
         let frame = frames[index];
 
         if (!frame) {
@@ -40,7 +42,7 @@
             }
         }
 
-        if (!frame || !context) {
+        if (!frame || !context || (!force && index === lastDrawnFrame && frame === lastDrawnImage)) {
             return;
         }
 
@@ -54,14 +56,16 @@
 
         context.clearRect(0, 0, width, height);
         context.drawImage(frame, x, y, drawWidth, drawHeight);
+        lastDrawnFrame = index;
+        lastDrawnImage = frame;
     }
 
     function resizeCanvas() {
-        pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+        pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
         canvas.width = Math.round(intro.clientWidth * pixelRatio);
         canvas.height = Math.round(intro.clientHeight * pixelRatio);
         context?.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
-        drawFrame(currentFrame);
+        drawFrame(currentFrame, true);
     }
 
     function pumpFrameQueue() {
@@ -69,7 +73,7 @@
             return;
         }
 
-        if (lastSortedFrame !== currentFrame) {
+        if (Math.abs(lastSortedFrame - currentFrame) >= 12) {
             pendingFrames.sort((first, second) =>
                 Math.abs(first - currentFrame) - Math.abs(second - currentFrame)
             );
@@ -89,7 +93,7 @@
             image.onload = () => {
                 frames[index] = image;
                 activeLoads -= 1;
-                drawFrame(currentFrame);
+                drawFrame(currentFrame, true);
                 pumpFrameQueue();
             };
             image.onerror = () => {
@@ -110,14 +114,17 @@
         frame: frameCount - 1,
         ease: 'none',
         onUpdate: () => {
-            currentFrame = Math.round(playhead.frame);
-            drawFrame(currentFrame);
+            const nextFrame = Math.round(playhead.frame);
+            if (nextFrame !== currentFrame) {
+                currentFrame = nextFrame;
+                drawFrame(currentFrame);
+            }
             pumpFrameQueue();
         },
         scrollTrigger: {
             trigger: intro,
             start: 'top top',
-            end: () => `+=${Math.round(window.innerHeight * 2.5)}`,
+            end: () => `+=${Math.round(window.innerHeight * 2.2)}`,
             pin: true,
             scrub: 0.15,
             anticipatePin: 1,

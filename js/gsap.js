@@ -7,25 +7,53 @@
     gsap.registerPlugin(ScrollTrigger);
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const contentSelector = [
+        '.cards > .card',
+        '.boxes > .box',
+        '.benifits > .benifit',
+        '.categories > .category',
+        '.parts > .part',
+        '.steps > .step',
+        '.faq .accordion-item',
+        '.service-holder .row > .img',
+        '.service-holder .row > .list'
+    ].join(', ');
 
-    function animateOnScroll(targets, trigger, options = {}) {
-        const elements = gsap.utils.toArray(targets).filter(Boolean);
-        const triggerElement = typeof trigger === 'string'
-            ? document.querySelector(trigger)
-            : trigger;
+    const animationProfiles = {
+        about: { title: { x: -30 }, content: { x: 38 } },
+        approach: { title: { y: 24 }, content: { scale: 0.9, y: 18 } },
+        team: { title: { scale: 0.94 }, content: { y: 34, rotation: 1.5 } },
+        services: { title: { x: 28 }, content: { scale: 0.86 } },
+        expertise: { title: { y: -24 }, content: { x: -32, y: 12 } },
+        why: { title: { scale: 0.92, y: 12 }, content: { x: 42 } },
+        join: { title: { x: -24 }, content: { y: 40 } },
+        how: { title: { y: 30 }, content: { x: -36, y: 8 } },
+        portfolio: { title: { scale: 0.9 }, content: { scale: 0.82, y: 22 } },
+        testimonials: { title: { x: 26 }, content: { y: 22, scale: 0.95 } },
+        'benifits-parts': { title: { y: -22 }, content: { x: 34 } },
+        'key-benifit': { title: { x: -28 }, content: { y: 32, rotation: -1.5 } },
+        'faqSection': { title: { y: 18 }, content: { x: 30 } },
+        'service-holder': { title: { x: 30 }, content: { y: 28, scale: 0.96 } },
+        contact: { title: { scale: 0.94 }, content: { x: -28, y: 16 } },
+        collaborate: { title: { y: 26, scale: 0.94 }, content: { y: 34 } },
+        default: { title: { y: 24 }, content: { y: 28 } }
+    };
 
-        if (elements.length === 0 || !triggerElement) return;
+    function animateOnScroll(elements, trigger, motion, options = {}) {
+        const targets = gsap.utils.toArray(elements).filter(Boolean);
 
-        gsap.from(elements, {
+        if (targets.length === 0 || !trigger || prefersReducedMotion) return;
+
+        gsap.from(targets, {
             autoAlpha: 0,
-            y: prefersReducedMotion ? 0 : options.y ?? 28,
-            duration: prefersReducedMotion ? 0.2 : options.duration ?? 0.65,
-            stagger: prefersReducedMotion ? 0 : options.stagger ?? 0.1,
-            ease: options.ease ?? 'power2.out',
+            ...motion,
+            duration: options.duration ?? 0.6,
+            stagger: options.stagger ?? 0.08,
+            ease: 'power2.out',
             immediateRender: false,
             scrollTrigger: {
-                trigger: triggerElement,
-                start: options.start ?? 'top 82%',
+                trigger,
+                start: 'top 84%',
                 once: true,
                 invalidateOnRefresh: true
             }
@@ -41,15 +69,15 @@
     ];
     const serviceLabel = document.querySelector('section.welcome .serviceSpanAnimation');
 
-    if (serviceLabel) {
+    if (serviceLabel && !prefersReducedMotion) {
         serviceLabel.textContent = welcomeServices[0];
 
         const serviceTimeline = gsap.timeline({ repeat: -1 });
         welcomeServices.forEach((service) => {
             serviceTimeline.to(serviceLabel, {
                 autoAlpha: 0,
-                y: prefersReducedMotion ? 0 : -8,
-                duration: prefersReducedMotion ? 0.12 : 0.2,
+                y: -8,
+                duration: 0.2,
                 delay: 2,
                 ease: 'power1.in'
             });
@@ -58,11 +86,11 @@
             });
             serviceTimeline.fromTo(serviceLabel, {
                 autoAlpha: 0,
-                y: prefersReducedMotion ? 0 : 8
+                y: 8
             }, {
                 autoAlpha: 1,
                 y: 0,
-                duration: prefersReducedMotion ? 0.18 : 0.3,
+                duration: 0.3,
                 ease: 'power2.out'
             });
         });
@@ -103,37 +131,46 @@
         });
     });
 
-    const excludedTitleSections = [
-        'welcome',
-        'text-slider',
-        'expertise',
-        'benifits-parts',
-        'collaborate'
-    ];
-
     document.querySelectorAll('section').forEach((section) => {
-        if (excludedTitleSections.some((className) => section.classList.contains(className))) return;
-        const title = section.querySelector('.title');
-        if (title) animateOnScroll(title, section, { y: 24, stagger: 0 });
+        if (section.matches('.scroll-intro, .welcome, .text-slider')) return;
+
+        const profileName = Object.keys(animationProfiles).find((name) =>
+            name !== 'default' && section.classList.contains(name)
+        );
+        const profile = animationProfiles[profileName] ?? animationProfiles.default;
+        const title = section.querySelector('.title, h2');
+        if (title) {
+            animateOnScroll(title, section, profile.title, { stagger: 0 });
+        }
+
+        animateOnScroll(section.querySelectorAll(contentSelector), section, profile.content, {
+            stagger: section.matches('.portfolio, .approach, .team') ? 0.12 : 0.08
+        });
+    });
+
+    window.addEventListener('portfolio:ready', () => {
+        const portfolio = document.querySelector('section.portfolio');
+        if (!portfolio) return;
+
+        animateOnScroll(
+            portfolio.querySelectorAll('.categories > .category'),
+            portfolio,
+            animationProfiles.portfolio.content,
+            { stagger: 0.06 }
+        );
+        animateOnScroll(
+            portfolio.querySelectorAll('.cards > .card'),
+            portfolio,
+            animationProfiles.portfolio.content,
+            { stagger: 0.12 }
+        );
     });
 
     const aboutSection = document.querySelector('section.about');
     const aboutText = aboutSection?.querySelector('.text');
 
-    if (aboutSection) {
-        animateOnScroll(aboutSection.querySelectorAll('.benifits .cards .card'), aboutSection, {
-            start: 'top 68%',
-            stagger: 0.12
-        });
-        animateOnScroll(aboutSection.querySelector('.text > .btn'), aboutSection, {
-            start: 'top 68%',
-            stagger: 0
-        });
-    }
-
     if (aboutSection && aboutText && !prefersReducedMotion) {
-        const media = gsap.matchMedia();
-        media.add('(min-width: 974px)', () => {
+        gsap.matchMedia().add('(min-width: 974px)', () => {
             const pinTrigger = ScrollTrigger.create({
                 trigger: aboutSection,
                 pin: aboutText,
@@ -145,53 +182,6 @@
             });
 
             return () => pinTrigger.kill();
-        });
-    }
-
-    const servicesSection = document.querySelector('section.services');
-    if (servicesSection) {
-        animateOnScroll(servicesSection.querySelectorAll('.boxes .box'), servicesSection, {
-            stagger: 0.12
-        });
-    }
-
-    const expertiseSection = document.querySelector('section.expertise');
-    if (expertiseSection) {
-        animateOnScroll(expertiseSection.querySelector('.holder .text'), expertiseSection);
-        animateOnScroll(expertiseSection.querySelectorAll('.holder .boxes .box'), expertiseSection, {
-            stagger: 0.12
-        });
-    }
-
-    const whySection = document.querySelector('section.why');
-    if (whySection) {
-        animateOnScroll(whySection.querySelectorAll('.benifits .benifit'), whySection, {
-            stagger: 0.1
-        });
-        animateOnScroll(whySection.querySelector('.img img'), whySection, { y: 20 });
-    }
-
-    const sectionAnimations = [
-        ['section.join', '.boxes .box'],
-        ['section.how', '.cards .card'],
-        ['section.portfolio', '.categories .category, .cards .card'],
-        ['section.testimonials', '.final-rate p, .final-rate .imgs .img'],
-        ['section.key-benifit', '.boxes .box']
-    ];
-
-    sectionAnimations.forEach(([sectionSelector, targetsSelector]) => {
-        const section = document.querySelector(sectionSelector);
-        if (!section) return;
-        animateOnScroll(section.querySelectorAll(targetsSelector), section, {
-            stagger: 0.1
-        });
-    });
-
-    const collaborateSection = document.querySelector('section.collaborate');
-    if (collaborateSection) {
-        animateOnScroll(collaborateSection.querySelector('h2'), collaborateSection, {
-            y: 18,
-            stagger: 0
         });
     }
 })();
