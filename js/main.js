@@ -1,15 +1,99 @@
+(() => {
+const header = document.querySelector('header');
+if (header) {
+    let lastScrollY = window.scrollY;
+    let direction = 0;
+    let directionDistance = 0;
+    let scrollUpdateScheduled = false;
 
+    const updateHeader = () => {
+        const currentScrollY = Math.max(0, window.scrollY);
+        const difference = currentScrollY - lastScrollY;
 
-const parent = document.querySelector('section.text-slider');
-const list = parent.querySelector('.list');
+        if (currentScrollY <= 2) {
+            header.classList.remove('is-hidden');
+            direction = 0;
+            directionDistance = 0;
+        } else if (difference !== 0) {
+            const nextDirection = Math.sign(difference);
 
-const clone = list.cloneNode(true);
-parent.append(clone)
+            if (nextDirection !== direction) {
+                direction = nextDirection;
+                directionDistance = 0;
+            }
 
+            directionDistance += Math.abs(difference);
 
-setInterval(() => {
-    scrollTo(0 , scrollY);
-}, 500);
+            if (directionDistance >= 4) {
+                header.classList.toggle('is-hidden', direction > 0);
+                directionDistance = 0;
+            }
+        }
+
+        lastScrollY = currentScrollY;
+        scrollUpdateScheduled = false;
+    };
+
+    window.addEventListener('scroll', () => {
+        if (scrollUpdateScheduled) return;
+        scrollUpdateScheduled = true;
+        window.requestAnimationFrame(updateHeader);
+    }, { passive: true });
+}
+
+const sideNav = document.querySelector('.side-nav');
+const menuToggler = document.querySelector('.menuToogller');
+const closeMenu = sideNav?.querySelector('.close');
+
+if (sideNav && menuToggler) {
+    if (!sideNav.id) sideNav.id = 'siteSideNav';
+    menuToggler.setAttribute('role', 'button');
+    menuToggler.setAttribute('tabindex', '0');
+    menuToggler.setAttribute('aria-label', 'Open contact menu');
+    menuToggler.setAttribute('aria-controls', sideNav.id);
+    menuToggler.setAttribute('aria-expanded', 'false');
+
+    const setMenuOpen = (isOpen) => {
+        sideNav.classList.toggle('is-open', isOpen);
+        menuToggler.setAttribute('aria-expanded', String(isOpen));
+        document.body.classList.toggle('menu-open', isOpen);
+        if (isOpen) header?.classList.remove('is-hidden');
+    };
+
+    menuToggler.addEventListener('click', () => {
+        setMenuOpen(!sideNav.classList.contains('is-open'));
+    });
+    menuToggler.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setMenuOpen(!sideNav.classList.contains('is-open'));
+        }
+    });
+
+    closeMenu?.setAttribute('role', 'button');
+    closeMenu?.setAttribute('tabindex', '0');
+    closeMenu?.setAttribute('aria-label', 'Close contact menu');
+    closeMenu?.addEventListener('click', () => setMenuOpen(false));
+    closeMenu?.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault();
+            setMenuOpen(false);
+        }
+    });
+
+    sideNav.addEventListener('click', (event) => {
+        if (event.target.closest('a')) setMenuOpen(false);
+    });
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') setMenuOpen(false);
+    });
+}
+
+const ticker = document.querySelector('section.text-slider');
+const tickerList = ticker?.querySelector('.list');
+if (ticker && tickerList) {
+    ticker.append(tickerList.cloneNode(true));
+}
 
 
 
@@ -90,3 +174,4 @@ function toggleFAQ() {
   
 // Call the function to initialize the FAQ functionality
 toggleFAQ();
+})();

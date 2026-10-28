@@ -79,7 +79,15 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
 </style>
 </head>
 
-<body>
+<body class="home-page">
+
+    <section class="scroll-intro" id="scrollIntro" aria-label="ICode introduction">
+        <canvas class="scroll-intro__canvas" aria-hidden="true"></canvas>
+        <p class="scroll-intro__prompt" aria-hidden="true">
+            <span>Scroll Now</span>
+            <span class="scroll-intro__indicator"></span>
+        </p>
+    </section>
 
     <a href="https://wa.me/+201100335498" class="float-ws" target="_blank">
         <i class="fa-brands fa-whatsapp"></i>
@@ -1268,7 +1276,7 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
                 </ul>
             </div>
             <div class="subscribe">
-                <h4>
+                <!-- <h4>
                     اشترك في نشرتنا الإخبارية
                 </h4>
                 <form action="./index.html" method="POST">
@@ -1277,7 +1285,7 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
                     <button type="submit">
                         اشتراك
                     </button>
-                </form>
+                </form> -->
                 <div class="social">
                     <a href="https://www.facebook.com/profile.php?id=61577047883984" target="_blank">
                         <i class="fab fa-facebook-f"></i>
@@ -1317,6 +1325,7 @@ var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n
         integrity="sha512-7eHRwcbYkK4d9g/6tD/mhkf++eoTHwpNM9woBxtPUBWm67zeAfFC+HrdoE2GanKeocly/VxeLvIqwvCdk7qScg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="js/scrollIntro.js"></script>
     <script src="js/cursorGsap.js"></script>
     <script src="js/gsap.js"></script>
     <script src="js/main.js"></script>
